@@ -53,9 +53,12 @@ RUN apt-get install -y --no-install-recommends gnupg && \
     apt-key adv --keyserver hkp://keys.gnupg.net --recv-key CD9C0E09B0C780943A1AD85553F8BD99F40DCB31 && \
     apt-get update && apt-get -y --no-install-recommends install macaulay2
 
-# Configure Apache2: enables CGI module and deals with X-Forwarded-Proto header
-RUN a2enmod cgid && \
-    echo 'SetEnvIf X-Forwarded-Proto "https" HTTPS=on' > /etc/apache2/conf-enabled/http-proto.conf
+# Enable CGI
+RUN a2enmod cgid
+
+# Install support for working behind a reverse proxy
+RUN apt-get -y --no-install-recommends install iproute2 && \
+    a2enmod remoteip
 
 # This is required to make the default WIMS path for GAP works
 RUN ln -s gap /usr/bin/gap.sh

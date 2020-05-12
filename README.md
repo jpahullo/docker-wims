@@ -4,9 +4,11 @@ This docker image contains [WIMS (Web Interactive Multipurpose Server)](https://
 
 At startup, the `log/logo.jpeg` file is copied into `public_html/logo.jpeg`, in order to ease the installation of an institutional logo. If `log/logo.jpeg` does not exist, then `public_html/logo.jpeg` is deleted.
 
-The image also contains sSMTP and some additional mail utilities, which allows WIMS to send emails trough a relay host. The behaviour of sSMTP is controlled by the following environment variables:
+The image also contains sSMTP and some additional mail utilities, which allow WIMS to send emails trough a relay host. The behaviour of sSMTP is controlled by the following environment variables:
   * `SSMTP_MAILHUB`: address of the relay host
   * `SSMTP_HOSTNAME`: hostname which should appear as the originating host of emails
+
+The image may be used behind a reverse proxy by setting the environment variable `REVERSE_PROXY` (any non empty value is equivalent). Unfortunately, this image lacks support for TLS when WIMS does not run behind a proxy.
 
 ## Example deployment
 
@@ -30,6 +32,7 @@ services:
     environment:
       - SSMTP_MAILHUB=<relay host>
       - SSMTP_HOSTNAME=<originating hostname>
+      - REVERSE_PROXY=yes
     ports:
       - 127.0.0.1:10000:80
 ```
