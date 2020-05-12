@@ -23,7 +23,7 @@ RUN apt-get update && apt-get -y --no-install-recommends -o Dpkg::Options::="--p
     libgd-dev \
     # Install additional software not present in a container image
     wget \
-    # Install recommended software 
+    # Install recommended software
     yacas \
     gap \
     maxima \
@@ -31,7 +31,7 @@ RUN apt-get update && apt-get -y --no-install-recommends -o Dpkg::Options::="--p
     maxima-share  \
     octave \
     graphviz \
-    ldap-utils \ 
+    ldap-utils \
        # scilab-cli is not recognized by WIMS
     scilab-cli \
     libwebservice-validator-html-w3c-perl \
@@ -45,7 +45,7 @@ RUN apt-get update && apt-get -y --no-install-recommends -o Dpkg::Options::="--p
     chemeq \
     # Install support for sending email (ssmtp alone is not enough)
     ssmtp \
-    bsd-mailx 
+    bsd-mailx
 
 # Install Macaulay2
 RUN apt-get install -y --no-install-recommends gnupg && \
@@ -59,7 +59,7 @@ RUN a2enmod cgid && \
 
 # This is required to make the default WIMS path for GAP works
 RUN ln -s gap /usr/bin/gap.sh
-    
+
 # Compile WIMS
 RUN adduser --disabled-password --gecos '' wims
 USER wims
