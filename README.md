@@ -10,7 +10,7 @@ The image also contains sSMTP and some additional mail utilities, which allow WI
 
 The image may be used behind a reverse proxy by setting the environment variable `REVERSE_PROXY` (any non empty value is equivalent). Unfortunately, this image lacks support for TLS when WIMS does not run behind a proxy.
 
-The WIMS version in this image is 4.19d.
+The WIMS version in this image is 4.19f.
 
 ## Example deployment
 
