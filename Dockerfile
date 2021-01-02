@@ -67,9 +67,9 @@ RUN ln -s gap /usr/bin/gap.sh
 RUN adduser --disabled-password --gecos '' wims
 USER wims
 WORKDIR /home/wims
-RUN wget -q https://sourcesup.renater.fr/frs/download.php/file/6143/wims-4.19f.tgz && \
-    tar xzf wims-4.19f.tgz && \
-    rm wims-4.19f.tgz && \
+RUN wget -q https://sourcesup.renater.fr/frs/download.php/file/6299/wims-4.21e.tgz && \
+    tar xzf wims-4.21e.tgz && \
+    rm wims-4.21e.tgz && \
     (yes "" | ./compile --mathjax --jmol --modules --geogebra --swac)
 
 # Configure WIMS
