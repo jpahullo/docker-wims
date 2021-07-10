@@ -50,7 +50,7 @@ RUN apt-get update && apt-get -y --no-install-recommends -o Dpkg::Options::="--p
 # Install Macaulay2
 RUN apt-get install -y --no-install-recommends gnupg && \
     echo 'deb http://www.math.uiuc.edu/Macaulay2/Repositories/Ubuntu bionic main' > /etc/apt/sources.list.d/macaulay2.list && \
-    apt-key adv --keyserver hkp://keys.gnupg.net --recv-key CD9C0E09B0C780943A1AD85553F8BD99F40DCB31 && \
+    wget -qO - http://www2.macaulay2.com/Macaulay2/PublicKeys/Macaulay2-key | apt-key add - && \
     apt-get update && apt-get -y --no-install-recommends install macaulay2
 
 # Enable CGI
