@@ -56,7 +56,6 @@ RUN apt-get update && \
 # Enable CGI
     a2enmod cgid && \
 # Install support for working behind a reverse proxy
-    apt-get -y install --no-install-recommends iproute2 && \
     a2enmod remoteip && \
 # This is required to make the default WIMS path for GAP works
     ln -s gap /usr/bin/gap.sh && \

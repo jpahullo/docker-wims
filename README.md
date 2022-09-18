@@ -8,7 +8,7 @@ The image also contains sSMTP and some additional mail utilities, which allow WI
   * `SSMTP_MAILHUB`: address of the relay host
   * `SSMTP_HOSTNAME`: hostname which should appear as the originating host of emails
 
-The image may be used behind a reverse proxy by setting the environment variable `REVERSE_PROXY` (any non empty value is equivalent). Unfortunately, this image lacks support for TLS when WIMS does not run behind a proxy.
+The image may be used behind a reverse proxy by setting the environment variable `REVERSE_PROXY` to its IP address. This will instruct WIMS to trust the `X-Forwarded-For` and `X-Forwarded-Proto` headers coming from the reverse proxy. Unfortunately, this image lacks support for TLS when WIMS does not run behind a proxy.
 
 ## Example deployment
 

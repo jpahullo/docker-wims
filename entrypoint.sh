@@ -5,10 +5,11 @@ mailhub=$SSMTP_MAILHUB
 hostname=$SSMTP_HOSTNAME
 EOF
 
+rm /etc/apache2/conf-enabled/http-proto.conf
 if [ "$REVERSE_PROXY" != "" ]; then
   echo 'SetEnvIf X-Forwarded-Proto "https" HTTPS=on' > /etc/apache2/conf-enabled/http-proto.conf
   echo 'RemoteIPHeader X-Forwarded-For' >> /etc/apache2/conf-enabled/http-proto.conf
-  echo "RemoteIPInternalProxy $(ip route | awk '/default/ { print $3 }')" >> /etc/apache2/conf-enabled/http-proto.conf
+  echo "RemoteIPInternalProxy $REVERSE_PROXY" >> /etc/apache2/conf-enabled/http-proto.conf
 fi
 
 if [ -f /home/wims/log/logo.jpeg ]; then
