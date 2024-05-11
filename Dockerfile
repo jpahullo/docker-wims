@@ -1,3 +1,4 @@
+# With bookworm GAP is not recognized by wims
 FROM debian:bullseye
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -70,9 +71,9 @@ RUN apt-get update && \
 # Compile WIMS
 USER wims
 WORKDIR /home/wims
-RUN wget -q https://sourcesup.renater.fr/frs/download.php/file/6528/wims-4.24.tgz && \
-    tar xzf wims-4.24.tgz && \
-    rm wims-4.24.tgz && \
+RUN wget -q https://sourcesup.renater.fr/frs/download.php/file/6667/wims-4.26.tgz && \
+    tar xzf wims-4.26.tgz && \
+    rm wims-4.26.tgz && \
     (yes "" | ./compile --mathjax --jmol --modules --geogebra --shtooka)
 
 # Configure WIMS and entry-point
@@ -82,6 +83,7 @@ RUN apt-get -y install --no-install-recommends lsb-release && \
     ./bin/setwrapexec && \
     ./bin/setwimsd && \
     ./bin/apache-config && \
+    chmod go-rwx ./src && \
     rm -rf /var/lib/apt/lists/* && \
     chmod +x /entrypoint.sh
 
