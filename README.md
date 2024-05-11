@@ -15,8 +15,6 @@ The image may be used behind a reverse proxy by setting the environment variable
 This an example of `docker-compose.yml` usable for deployment of the image trough Docker Compose:
 
 ```yaml
-version: '3.2'
-
 volumes:
   wims:
 
