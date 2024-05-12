@@ -1,5 +1,4 @@
-# With bookworm GAP is not recognized by wims
-FROM debian:bullseye
+FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -22,6 +21,7 @@ RUN apt-get update && \
       liburi-perl \
       imagemagick \
       libgd-dev \
+      libfl-dev \
       wget \
       curl \
       # Install recommended software
@@ -31,29 +31,26 @@ RUN apt-get update && \
       # maxima-share is  needed since we are not installing recommended packages by default
       maxima-share  \
       octave \
+      octave-statistics \
       graphviz \
       ldap-utils \
       scilab-cli \
       libwebservice-validator-html-w3c-perl \
       qrencode \
       fortune \
-      unzip \
       zip \
+      unzip \
       libgmp-dev \
       openbabel \
+      # Other recommended software
       povray \
+      macaulay2 \
       # Install other software
       bc \
       chemeq \
       # Install support for sending email (ssmtp alone is not enough)
       ssmtp \
       bsd-mailx && \
-# Install Macaulay2
-    apt-get install -y --no-install-recommends gnupg && \
-    echo 'deb http://www.math.uiuc.edu/Macaulay2/Repositories/Debian bullseye main' > /etc/apt/sources.list.d/macaulay2.list && \
-    wget -qO - http://www2.macaulay2.com/Macaulay2/PublicKeys/Macaulay2-key | apt-key add - && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends macaulay2 && \
 # Enable CGI
     a2enmod cgid && \
 # Install support for working behind a reverse proxy
@@ -62,16 +59,16 @@ RUN apt-get update && \
     ln -s gap /usr/bin/gap.sh && \
 # Configure POVray according to WIMS instructions
     echo "read+write* = /home/wims/tmp/sessions" >> /etc/povray/3.7/povray.conf && \
-# This is required if we want Maxima to find its help file, which avoids a warning at
-# startup and allows WIMS to determine Maxima's version.
-    gunzip /usr/share/doc/maxima/info/maxima-index.lisp.gz && \
+    echo "pkg load statistics" >>  /etc/octaverc && \
+    # WIMS instructions says 128k, but latest versions do not work with such a small stack size
+    echo "-Xss256k" >> /usr/share/octave/6.4.0/m/java/java.opts && \
 # Add wims user
     adduser --disabled-password --gecos '' wims
 
 # Compile WIMS
 USER wims
 WORKDIR /home/wims
-RUN wget -q https://sourcesup.renater.fr/frs/download.php/file/6667/wims-4.26.tgz && \
+RUN wget https://sourcesup.renater.fr/frs/download.php/file/6667/wims-4.26.tgz && \
     tar xzf wims-4.26.tgz && \
     rm wims-4.26.tgz && \
     (yes "" | ./compile --mathjax --jmol --modules --geogebra --shtooka)

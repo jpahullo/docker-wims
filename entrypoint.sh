@@ -5,7 +5,7 @@ mailhub=$SSMTP_MAILHUB
 hostname=$SSMTP_HOSTNAME
 EOF
 
-rm /etc/apache2/conf-enabled/http-proto.conf
+rm -f /etc/apache2/conf-enabled/http-proto.conf
 if [ "$REVERSE_PROXY" != "" ]; then
   echo 'SetEnvIf X-Forwarded-Proto "https" HTTPS=on' > /etc/apache2/conf-enabled/http-proto.conf
   echo 'RemoteIPHeader X-Forwarded-For' >> /etc/apache2/conf-enabled/http-proto.conf
