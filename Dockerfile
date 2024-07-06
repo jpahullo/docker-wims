@@ -51,7 +51,9 @@ RUN apt-get update && \
       chemeq \
       # Install support for sending email (ssmtp alone is not enough)
       ssmtp \
-      bsd-mailx && \
+      bsd-mailx \
+      # Install patch
+      patch && \
 # Enable CGI
     a2enmod cgid && \
 # Install support for working behind a reverse proxy
@@ -74,9 +76,12 @@ RUN apt-get update && \
 # Compile WIMS
 USER wims
 WORKDIR /home/wims
+COPY patch.txt /home/wims
 RUN wget https://sourcesup.renater.fr/frs/download.php/file/6667/wims-4.26.tgz && \
     tar xzf wims-4.26.tgz && \
     rm wims-4.26.tgz && \
+    patch -p1 < patch.txt && \
+    rm patch.txt && \
     (yes "" | ./compile --mathjax --jmol --modules --geogebra --shtooka)
 
 # Configure WIMS and entry-point
