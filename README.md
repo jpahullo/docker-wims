@@ -1,6 +1,6 @@
 # WIMS
 
-This docker image contains [WIMS (Web Interactive Multipurpose Server)](https://wimsedu.info/) together with additional support software (Gnuplot, Graphviz, Povray, PARI/GP, Maxima, Octave, GAP, Yacas, Macaulay2 and others). The log directory of WIMS is exported as a volume. I hope this is the only directory we need to preserve when rebuilding containers. It seems to be enough, at least for classes and general configuration.
+This docker image contains [WIMS (Web Interactive Multipurpose Server)](https://wimsedu.info/) together with additional support software (Gnuplot, Graphviz, Povray, PARI/GP, Maxima, Octave, GAP, Yacas, Macaulay2 and others). The `log` and `public_html/modules/devel` directories of WIMS are exported as volumes. I hope these are the only directories we need to preserve when rebuilding containers.
 
 At startup, the `log/logo.jpeg` file is copied into `public_html/logo.jpeg`, in order to ease the installation of an institutional logo. If `log/logo.jpeg` does not exist, then `public_html/logo.jpeg` is deleted.
 
@@ -27,6 +27,7 @@ services:
     restart: always
     volumes:
       - wims:/home/wims/log:Z
+      - devel:/home/wims/public_html/modules/devel:Z
     environment:
       - SSMTP_MAILHUB=<relay host>
       - SSMTP_HOSTNAME=<originating hostname>
@@ -36,7 +37,7 @@ services:
 ```
 Since Maxima uses the `personality` system call, which is normally banned within a container, we need a custom seccomp profile, or to disable seccomp altogether (the solution adopted in the example, although it is not the one I would recommend). The page [Seccomp security profiles for Docker](https://docs.docker.com/engine/security/seccomp/) gives more details on seccomp profiles.
 
- In the example above, the HTTP port of the container is exported as port 10000 in localhost. It can be later remapped to the `/wims` directory of the host using a reverse proxy, as in the following snippet of an Apache config file:
+In the example above, the HTTP port of the container is exported as port 10000 in localhost. It can be later remapped to the `/wims` directory of the host using a reverse proxy, as in the following snippet of an Apache config file:
 
  ```apache
  <Location /wims>
