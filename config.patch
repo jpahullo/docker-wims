@@ -1,0 +1,11 @@
+--- src/config.c	2024-03-11 11:14:56.000000000 +0100
++++ src/config-cli.c	2024-11-04 17:10:09.118498974 +0100
+@@ -62,7 +62,7 @@
+ char *maxima_command="maxima -X '--dynamic-space-size 512'";
+ char *pari_command="gp -f -q -p 150000";
+ char *octave_command="octave -Hq --no-line-editing --no-window-system --silent";
+-char *scilab_command="scilab -nwni";
++char *scilab_command="scilab-cli -nwni";
+ char *QRencode_command="qrencode -o";
+ 
+ /* default languages */

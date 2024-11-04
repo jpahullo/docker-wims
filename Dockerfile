@@ -76,12 +76,21 @@ RUN apt-get update && \
 # Compile WIMS
 USER wims
 WORKDIR /home/wims
+RUN wget https://sourcesup.renater.fr/frs/download.php/file/6702/wims-4.28.tgz && \
+    tar xzf wims-4.28.tgz && \
+    rm wims-4.28.tgz
 COPY patch.txt /home/wims
-RUN wget https://sourcesup.renater.fr/frs/download.php/file/6667/wims-4.26.tgz && \
-    tar xzf wims-4.26.tgz && \
-    rm wims-4.26.tgz && \
-    patch -p1 < patch.txt && \
+COPY compile.patch /home/wims
+COPY scilab.patch /home/wims
+COPY config.patch /home/wims
+RUN patch -p1 < patch.txt && \
+    patch -p0 < compile.patch && \
+    patch -p0 < scilab.patch && \
+    patch -p0 < config.patch && \
     rm patch.txt && \
+    rm compile.patch && \
+    rm scilab.patch && \
+    rm config.patch && \
     (yes "" | ./compile --mathjax --jmol --modules --geogebra --shtooka)
 
 # Configure WIMS and entry-point
