@@ -30,6 +30,15 @@ destroy:
 .PHONY: restart
 restart: destroy start
 
+.PHONY: show-admin-password
+show-admin-password:
+	$(docker-compose) exec wims cat log/.wimspass
+	$(docker-compose) exec wims cat tmp/log/.wimspassone
+
+.PHONY: open-shell
+open-shell:
+	@$(docker-compose) exec wims bash
+
 .PHONY: activate-rsyslog-for-forensyc
 activate-rsyslog-for-forensyc:
 	$(docker-compose) exec wims apt update
