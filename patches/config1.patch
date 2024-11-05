@@ -1,6 +1,6 @@
 diff -Naur wims-4.27d/src/config.c wims-4.27d-mod/src/config.c
---- wims-4.27d/src/config.c     2024-03-11 11:14:56.000000000 +0100
-+++ wims-4.27d-mod/src/config.c 2024-07-06 12:26:35.653935672 +0200
+--- src/config.c 2024-03-11 11:14:56.000000000 +0100
++++ src/config.c 2024-07-06 12:26:35.653935672 +0200
 @@ -486,9 +486,6 @@
  #ifdef RLIMIT_RSS
    {RLIMIT_RSS, &rlimit_rss},
