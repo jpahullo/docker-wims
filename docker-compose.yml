@@ -1,12 +1,18 @@
+# .env file is necessary to load the indicated variables.
 services:
   wims:
     image: amatogianluca/wims:4.28
     build:
       context: .
+      dockerfile: Dockerfile
+      args:
+        WIMS_VERSION_URL: ${DOWNLOAD_WIMS_FROM}
+        WIMS_VERSION: ${WIMS_VERSION}
+        WIMS_PASS: ${WIMS_PASS}
     security_opt:
       - seccomp:unconfined
-    hostname: wims-4-28
-    container_name: wims-4-28
+    hostname: ${container_name}
+    container_name: ${container_name}
     restart: always
     ports:
       - 10000:80
