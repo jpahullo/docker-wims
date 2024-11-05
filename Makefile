@@ -9,14 +9,18 @@ all: build-quick-and-restart
 build-quick-and-restart: build-quick restart
 
 .PHONY: build-quick
-build-quick:
+build-quick: copy-env
 	$(docker-compose) build
+
+.PHONY: copy-env
+copy-env:
+	cp -n $(current-dir).env-dist .env
 
 .PHONY: build-full-and-restart
 build-full-and-restart: build-full restart
 
 .PHONY: build-full
-build-full:
+build-full: copy-env
 	$(docker-compose) build --no-cache
 
 .PHONY: start
@@ -32,8 +36,8 @@ restart: destroy start
 
 .PHONY: show-admin-password
 show-admin-password:
-	$(docker-compose) exec wims cat log/.wimspass
-	$(docker-compose) exec wims cat tmp/log/.wimspassone
+	$(docker-compose) exec wims find log/ -name ".wimspass" -exec cat {} +
+	$(docker-compose) exec wims find tmp/log/ -name ".wimspassone" -exec cat {} +
 
 .PHONY: open-shell
 open-shell:

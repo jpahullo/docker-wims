@@ -1,6 +1,11 @@
 FROM ubuntu:22.04
 
-ENV DEBIAN_FRONTEND noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
+ARG TZ=Europe/Madrid
+# URL for the WIMS .tgz file from: https://sourcesup.renater.fr/frs/?group_id=379.
+ARG WIMS_VERSION_URL=https://sourcesup.renater.fr/frs/download.php/file/6702/wims-4.28.tgz
+ARG WIMS_VERSION=${WIMS_VERSION:-wims-4.8}
+ARG WIMS_PASS
 
 RUN apt-get update && \
 # Install packages
@@ -71,22 +76,28 @@ RUN apt-get update && \
     echo "pkg load statistics" >>  /etc/octaverc && \
     echo "-Xss128k" >> /usr/share/octave/6.4.0/m/java/java.opts && \
 # Add wims user
-    adduser --disabled-password --gecos '' wims
+    adduser --disabled-password --gecos '' wims && \
+# Set Time Zone.
+    ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && \
+    echo "$TZ" > /etc/timezone && \
+# Set locale to prevent error codes on generated wims phtml files, like:
+# public_html/modules/adm/manage/lang/update.phtml.es
+    apt-get install -y locales locales-all
 
 # Compile WIMS
 USER wims
 WORKDIR /home/wims
-RUN wget https://sourcesup.renater.fr/frs/download.php/file/6702/wims-4.28.tgz && \
-    tar xzf wims-4.28.tgz && \
-    rm wims-4.28.tgz
+RUN wget -q ${WIMS_VERSION_URL} && \
+    tar xzf ${WIMS_VERSION}.tgz && \
+    rm ${WIMS_VERSION}.tgz
 # Copy all current patches. Also the script to apply them properly.
 COPY patches/* /home/wims
 # Apply patches to WIMS code before compiling.
 RUN ./apply_patches.sh && \
     rm *.patch apply_patches.sh && \
-    (yes "" | ./compile --mathjax --jmol --modules --geogebra --shtooka)
+    (printf "\n\n${WIMS_PASS}" | LANG=en_US.UTF-8 LANGUAGE=en LC_CTYPE=en_US.UTF-8 LC_NUMERIC=en_US.UTF-8 ./compile --mathjax --jmol --modules --geogebra --shtooka)
 
-# Configure WIMS and entry-point
+# Configure WIMS and entrypoint.
 USER root
 COPY --chmod=0755 assets/entrypoint.sh /
 RUN apt-get -y install --no-install-recommends lsb-release net-tools && \
@@ -96,8 +107,15 @@ RUN apt-get -y install --no-install-recommends lsb-release net-tools && \
     chmod go-rwx ./src && \
     rm -rf /var/lib/apt/lists/*
 
-# Metadata
+# Metadata.
 LABEL maintainer="Gianluca Amato <gianluca.amato.74@gmail.com>"
+# Set up an internal environment variable with the built WIMS version.
+ENV WIMS_VERSION=${WIMS_VERSION}
+# Set up the default lang.
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en
+ENV LC_CTYPE en_US.UTF-8
+ENV LC_NUMERIC en_US.UTF-8
 VOLUME /home/wims/log
 VOLUME /home/wims/public_html/modules/devel
 ENTRYPOINT [ "/entrypoint.sh" ]
