@@ -1,6 +1,8 @@
 current-dir := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 docker-compose := docker compose -f $(current-dir)docker-compose.yml
-make := /usr/bin/make
+make := /usr/bin/make -f $(current-dir)Makefile
+
+include $(current-dir).env
 
 .PHONY: all
 all: build-quick-and-restart
@@ -14,7 +16,7 @@ build-quick: copy-env
 
 .PHONY: copy-env
 copy-env:
-	cp -n $(current-dir).env-dist .env
+	cp -n $(current-dir).env-dist $(current-dir).env
 
 .PHONY: build-full-and-restart
 build-full-and-restart: build-full restart
@@ -29,7 +31,7 @@ start:
 
 .PHONY: destroy
 destroy:
-	$(docker-compose) down
+	$(docker-compose) down --remove-orphans
 
 .PHONY: restart
 restart: destroy start
@@ -60,3 +62,18 @@ activate-rsyslog-for-forensyc:
 	@echo `date +"%Y-%m-%d %H:%M:%S"`" === START:" $(target)
 	@bash -c "set -m; trap 'exit 0' INT; $(make) --no-print-directory $(target)"
 	@echo `date +"%Y-%m-%d %H:%M:%S"`" === END  :" $(target)
+
+.PHONY: test
+test: configuration-file-checking-echoed
+
+# On latest WIMS version, when defined WIMS_PASS variable,
+# the content of .wimspass is a randomly generated value.
+.PHONY: configuration-file-checking
+configuration-file-checking:
+	docker run --rm --entrypoint test $(WIMS_IMAGE_NAME) -f /home/wims/log/.wimspass;
+	docker run --rm --entrypoint test $(WIMS_IMAGE_NAME) ! -f /home/wims/log/wims.conf;
+	@echo "OK: Configuration files checking passed!"
+
+.PHONY: push-to-hub
+push-to-hub: test
+	docker push $(WIMS_IMAGE_NAME)

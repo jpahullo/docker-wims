@@ -112,17 +112,14 @@ RUN ./apply_patches.sh && \
 
 # Configure WIMS and final cleanup.
 USER root
-COPY --chmod=0755 assets/entrypoint.sh /
+COPY --chmod=0755 assets/ /wims
 RUN apt-get -y install --no-install-recommends lsb-release net-tools && \
-    ./bin/setwrapexec && \
-    ./bin/setwimsd && \
-    ./bin/apache-config && \
-    chmod go-rwx ./src && \
+    /wims/bin/post-install.sh  && \
     rm -rf /var/lib/apt/lists/*
 
 # Metadata.
 LABEL maintainer="Gianluca Amato <gianluca.amato.74@gmail.com>"
 VOLUME /home/wims/log
 VOLUME /home/wims/public_html/modules/devel
-ENTRYPOINT [ "/entrypoint.sh" ]
+ENTRYPOINT [ "/wims/bin/entrypoint.sh" ]
 EXPOSE 80/tcp
