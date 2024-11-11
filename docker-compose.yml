@@ -1,7 +1,7 @@
 # .env file is necessary to load the indicated variables.
 services:
   wims:
-    image: amatogianluca/wims:4.28
+    image: ${WIMS_IMAGE_NAME}
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,6 +11,14 @@ services:
         WIMS_PASS: ${WIMS_PASS}
     security_opt:
       - seccomp:unconfined
+    environment:
+      APP_ENV: ${APP_ENV}
+      ## Other variables you can define here:
+      ## For 2_apache2_http-proto.sh:
+      # REVERSE_PROXY:
+      ## For 1_ssmtp.sh:
+      # SSMTP_MAILHUB:
+      # SSMTP_HOSTNAME:
     hostname: ${container_name}
     container_name: ${container_name}
     restart: always
