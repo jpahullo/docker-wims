@@ -35,8 +35,6 @@ Some aspects you should consider, but not only:
    increment your container image and losing those logs (potentially) after a service restart.
 3. Keep all `classes` and the rest of directoris as they are between service restarts. You should
    consider using volumes or bind volumes to keep them all.
-4. If your production infrastructure will load balance HTTP requests between several hosts, you
-   should consider sharing those volumes in all backend nodes.
 
 ## Customization
 
