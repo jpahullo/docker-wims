@@ -1,0 +1,38 @@
+# .env file is necessary to load the indicated variables.
+services:
+  wims:
+    image: ${WIMS_IMAGE_NAME}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        WIMS_VERSION_URL: ${DOWNLOAD_WIMS_FROM}
+        WIMS_VERSION: ${WIMS_VERSION}
+        WIMS_PASS: ${WIMS_PASS}
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      APP_ENV: ${APP_ENV}
+      ## Other variables you can define here:
+      ## For 2_apache2_http-proto.sh:
+      # REVERSE_PROXY:
+      ## For 1_ssmtp.sh:
+      # SSMTP_MAILHUB:
+      # SSMTP_HOSTNAME:
+    hostname: ${container_name}
+    container_name: ${container_name}
+    restart: always
+    ports:
+      - 10000:80
+    logging:
+      driver: "journald"
+      options:
+        tag: "wims"
+        cache-disabled: "true"
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+    volumes:
+      - ./log-volume:/home/wims/log
+      - ./devel-volume:/home/wims/public_html/modules/devel
