@@ -1,0 +1,40 @@
+# This is an example of identification file for connection to another
+# platform. It is used for platform authentification.
+# If you copy this file to another one in the same directory,
+# and modify the definitions, you get another platform identification
+# whose name is the name of that file.
+
+# Identifier for WIMS server at wims.univ-cotedazur.fr.
+
+# For security reasons, it is highly recommended that you only accept
+# localhost connections. Accept several sites, but no wildcard.
+ident_site=134.59.204.174
+
+# A short description
+ident_desc=WIMS @ Université de Nice
+
+# User agent of the connecting platform must identify itself as such.
+ident_agent=WIMS-webget
+
+# https is highly recommended for security.
+ident_protocol=https
+
+# password must be a word composed of alpha-numeric characters.
+# This identification is disabled by the * in the password definition.
+ident_password=***
+
+# type of remote platform.
+# available types: json, wims
+ident_type=json
+
+# The address and identifier/password pair for calling back.
+# You should replace *** by correct definitions that match ones on the
+# remote server.
+back_url=https://wims.univ-cotedazur.fr/wims/wims.cgi
+back_ident=***
+back_password=***
+
+# allowed or disabled requests. At most one of the two should be active.
+# ident_allow=
+ident_deny=deluser delclass
+
