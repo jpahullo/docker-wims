@@ -118,7 +118,7 @@ RUN apt-get -y install --no-install-recommends lsb-release net-tools && \
     rm -rf /var/lib/apt/lists/*
 
 # Metadata.
-LABEL maintainer="Gianluca Amato <gianluca.amato.74@gmail.com>"
+LABEL org.opencontainers.image.authors="Gianluca Amato <gianluca.amato.74@gmail.com>, Jordi Pujol-Ahulló <jordi.pujol@urv.cat>"
 VOLUME /home/wims/log
 VOLUME /home/wims/public_html/modules/devel
 ENTRYPOINT [ "/wims/bin/entrypoint.sh" ]
